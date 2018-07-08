@@ -1,5 +1,9 @@
 FROM buildpack-deps:stretch
 
+ARG RGBDS_GITHUB_USER_NAME=rednex
+ARG RGBDS_GITHUB_REPO_NAME=rgbds
+ARG RGBDS_GITHUB_REPO_COMMIT=e2de106
+
 ARG LLVMZ80_GITHUB_USER_NAME=Bevinsky
 ARG LLVMZ80_GITHUB_REPO_NAME=llvm-gbz80
 ARG LLVMZ80_GITHUB_REPO_COMMIT=eae7104
@@ -16,11 +20,20 @@ RUN set -eux; \
     curl \
     rsync \
     cmake \
-    ninja-build; \
+    ninja-build \
+    byacc \
+    flex \
+    pkg-config \
+    libpng-dev; \
   \
   cd /; \
+  curl -L https://api.github.com/repos/$RGBDS_GITHUB_USER_NAME/$RGBDS_GITHUB_REPO_NAME/tarball/$RGBDS_GITHUB_REPO_COMMIT | tar -xvzf -; \
   curl -L https://api.github.com/repos/$LLVMZ80_GITHUB_USER_NAME/$LLVMZ80_GITHUB_REPO_NAME/tarball/$LLVMZ80_GITHUB_REPO_COMMIT | tar -xvzf -; \
   curl -L https://api.github.com/repos/$CLANG_GITHUB_USER_NAME/$CLANG_GITHUB_REPO_NAME/tarball/$CLANG_GITHUB_REPO_COMMIT | tar -xvzf -; \
+  \
+  cd /$RGBDS_GITHUB_USER_NAME-$RGBDS_GITHUB_REPO_NAME-$RGBDS_GITHUB_REPO_COMMIT; \
+  make; \
+  make install; \
   \
   mkdir -p /llvm/tools/clang; \
   mkdir -p /llvm/build/Debug; \
