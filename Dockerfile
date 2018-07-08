@@ -17,6 +17,7 @@ RUN set -eux; \
     rsync \
     cmake \
     ninja-build; \
+  \
   cd /; \
   curl -L https://api.github.com/repos/$LLVMZ80_GITHUB_USER_NAME/$LLVMZ80_GITHUB_REPO_NAME/tarball/$LLVMZ80_GITHUB_REPO_COMMIT | tar -xvzf -; \
   curl -L https://api.github.com/repos/$CLANG_GITHUB_USER_NAME/$CLANG_GITHUB_REPO_NAME/tarball/$CLANG_GITHUB_REPO_COMMIT | tar -xvzf -; \
@@ -45,4 +46,6 @@ RUN set -eux; \
     -DBUILD_SHARED_LIBS=ON; \
   cmake --build .;
 
-CMD ["/bin/bash", "-c", "/llvm/build/Debug/bin/clang -target gbz80 -xc - -S -o- <<<'void test(void){}'"]
+ENV PATH /llvm/build/Debug/bin:$PATH
+
+CMD ["/bin/bash", "-c", "clang -target gbz80 -xc - -S -o- <<<'void test(void){}'"]
