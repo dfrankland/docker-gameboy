@@ -59,4 +59,4 @@ RUN set -eux; \
 
 ENV PATH /llvm/build/Debug/bin:$PATH
 
-CMD ["/bin/bash", "-c", "clang -target gbz80 -xc - -S -o- <<<'void test(void){}'"]
+CMD ["/bin/bash", "-c", "clang -target z80 -xc - -S -o- <<<'void test(void){}'"]
