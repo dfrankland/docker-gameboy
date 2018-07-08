@@ -1,9 +1,5 @@
 FROM buildpack-deps:stretch
 
-ARG LLVMZ80_GITHUB_USER_NAME=jacobly0
-ARG LLVMZ80_GITHUB_REPO_NAME=llvm-z80
-ARG LLVMZ80_GITHUB_REPO_COMMIT=71ec7b8
-
 # Same commit as the SVN repo:
 # http://llvm.org/svn/llvm-project/llvm/trunk@316129
 ARG LLVM_GITHUB_USER_NAME=llvm-mirror
@@ -16,6 +12,10 @@ ARG CLANG_GITHUB_USER_NAME=llvm-mirror
 ARG CLANG_GITHUB_REPO_NAME=clang
 ARG CLANG_GITHUB_REPO_COMMIT=ac9a20e
 
+ARG LLVMZ80_GITHUB_USER_NAME=jacobly0
+ARG LLVMZ80_GITHUB_REPO_NAME=llvm-z80
+ARG LLVMZ80_GITHUB_REPO_COMMIT=71ec7b8
+
 RUN set -eux; \
   \
   apt-get update; \
@@ -26,16 +26,16 @@ RUN set -eux; \
     cmake \
     ninja-build; \
   cd /; \
-  curl -L https://api.github.com/repos/$LLVMZ80_GITHUB_USER_NAME/$LLVMZ80_GITHUB_REPO_NAME/tarball/$LLVMZ80_GITHUB_REPO_COMMIT | tar -xvzf -; \
   curl -L https://api.github.com/repos/$LLVM_GITHUB_USER_NAME/$LLVM_GITHUB_REPO_NAME/tarball/$LLVM_GITHUB_REPO_COMMIT | tar -xvzf -; \
   curl -L https://api.github.com/repos/$CLANG_GITHUB_USER_NAME/$CLANG_GITHUB_REPO_NAME/tarball/$CLANG_GITHUB_REPO_COMMIT | tar -xvzf -; \
+  curl -L https://api.github.com/repos/$LLVMZ80_GITHUB_USER_NAME/$LLVMZ80_GITHUB_REPO_NAME/tarball/$LLVMZ80_GITHUB_REPO_COMMIT | tar -xvzf -; \
   \
   mkdir -p /llvm/tools/clang; \
   mkdir -p /llvm/build/Debug; \
   \
   rsync -a /$LLVM_GITHUB_USER_NAME-$LLVM_GITHUB_REPO_NAME-$LLVM_GITHUB_REPO_COMMIT/ /llvm; \
-  rsync -a /$LLVMZ80_GITHUB_USER_NAME-$LLVMZ80_GITHUB_REPO_NAME-$LLVMZ80_GITHUB_REPO_COMMIT/ /llvm; \
   rsync -a /$CLANG_GITHUB_USER_NAME-$CLANG_GITHUB_REPO_NAME-$CLANG_GITHUB_REPO_COMMIT/ /llvm/tools/clang; \
+  rsync -a /$LLVMZ80_GITHUB_USER_NAME-$LLVMZ80_GITHUB_REPO_NAME-$LLVMZ80_GITHUB_REPO_COMMIT/ /llvm; \
   \
   cd /llvm/build/Debug; \
   cmake ../.. \
